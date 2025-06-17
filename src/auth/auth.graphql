@@ -1,0 +1,13 @@
+type ApiCredentialOutput {
+  access_token: String!
+}
+
+input SignInInput {
+  email: String! @constraint(format: "email")
+  password: String! @constraint(minLength: 4)
+}
+
+type Mutation {
+  signIn(input: SignInInput!): ApiCredentialOutput!
+  signUp(input: SignInInput!): ApiCredentialOutput!
+}
