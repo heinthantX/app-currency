@@ -13,10 +13,25 @@ export enum OrderBy {
     desc = "desc"
 }
 
+export class SignInInput {
+    email: string;
+    password: string;
+}
+
 export class FindAllInput {
     page?: Nullable<number>;
     limit?: Nullable<number>;
     orderBy: OrderBy;
+}
+
+export class ApiCredentialOutput {
+    access_token: string;
+}
+
+export abstract class IMutation {
+    abstract signIn(input: SignInInput): ApiCredentialOutput | Promise<ApiCredentialOutput>;
+
+    abstract signUp(input: SignInInput): ApiCredentialOutput | Promise<ApiCredentialOutput>;
 }
 
 export abstract class IQuery {

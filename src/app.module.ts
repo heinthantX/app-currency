@@ -14,6 +14,8 @@ import {
 import { constraintDirective } from 'graphql-constraint-directive';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionFilter } from './common/filters/all-exception.filter';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -36,6 +38,8 @@ import { AllExceptionFilter } from './common/filters/all-exception.filter';
         noLocation: true,
       },
     }),
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
