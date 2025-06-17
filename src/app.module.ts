@@ -12,6 +12,8 @@ import {
   PhoneNumberResolver,
 } from 'graphql-scalars';
 import { constraintDirective } from 'graphql-constraint-directive';
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionFilter } from './common/filters/all-exception.filter';
 
 @Module({
   imports: [
@@ -36,6 +38,11 @@ import { constraintDirective } from 'graphql-constraint-directive';
     }),
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}
