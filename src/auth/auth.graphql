@@ -7,7 +7,20 @@ input SignInInput {
   password: String! @constraint(minLength: 4)
 }
 
+input SignUpInput {
+  email: String! @constraint(format: "email")
+  password: String! @constraint(minLength: 4)
+  companyName: String
+  contactPerson: String
+}
+
+input ChangePasswordInput {
+  oldPassword: String!
+  newPassword: String!
+}
+
 type Mutation {
   signIn(input: SignInInput!): ApiCredentialOutput!
-  signUp(input: SignInInput!): ApiCredentialOutput!
+  signUp(input: SignUpInput!): ApiCredentialOutput!
+  changePassword(input: ChangePasswordInput!): APIMessageOutput!
 }

@@ -14,15 +14,56 @@ datasource db {
 }
 
 model User {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  email       String    @unique
-  password    String
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  email         String  @unique
+  password      String
+  companyName   String?
+  contactPerson String?
+
   lastLoginAt DateTime? @default(now())
   role        UserRole  @default(USER)
+
+  appIds String[] @db.ObjectId
+  apps   App[]    @relation(fields: [appIds], references: [id])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   @@map("users")
 }
 
 enum UserRole {
   USER
+}
+
+model App {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  appName       String
+  appIdentifier String
+  description   String?
+  platform      Platform
+  status        AppStatus
+
+  apiKey    String?
+  secretKey String?
+
+  userIds String[] @db.ObjectId
+  users   User[]   @relation(fields: [userIds], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("apps")
+}
+
+enum Platform {
+  ANDROID
+  IOS
+  WEB
+}
+
+enum AppStatus {
+  ACTIVE
+  PENDING_REVIEW
+  SUSPENDED
 }

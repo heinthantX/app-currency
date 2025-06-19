@@ -4,7 +4,14 @@ import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import Cryptr from 'cryptr';
 import bcrypt from 'bcrypt';
-import { ApiCredentialOutput, SignInInput } from '../../typing';
+import {
+  ApiCredentialOutput,
+  SignInInput,
+  SignUpInput,
+  ChangePasswordInput,
+  APIMessageOutput,
+} from '../../typing';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -66,7 +73,12 @@ export class AuthService {
     }
   }
 
-  async signUp({ email, password }: SignInInput): Promise<ApiCredentialOutput> {
+  async signUp({
+    email,
+    password,
+    companyName,
+    contactPerson,
+  }: SignUpInput): Promise<ApiCredentialOutput> {
     try {
       const user = await this.userService.findOne({
         email: email.toLocaleLowerCase(),
@@ -80,6 +92,8 @@ export class AuthService {
         email: email.toLocaleLowerCase(),
         password: hashedPassword,
         lastLoginAt: new Date(),
+        companyName,
+        contactPerson,
       });
 
       return {
@@ -91,5 +105,20 @@ export class AuthService {
       }
       throw new BadRequestException('Unable to sign in');
     }
+  }
+
+  async changePassword(
+    input: ChangePasswordInput,
+    user: User,
+  ): Promise<APIMessageOutput> {
+    const { oldPassword, newPassword } = input;
+    const isMatch = await this.comparePassword(oldPassword, user.password);
+    if (!isMatch) {
+      throw new BadRequestException('Password is incorrect.');
+    }
+
+    const hashedPassword = await this.hashPassword(newPassword);
+    await this.userService.update(user.id, { password: hashedPassword });
+    return { message: 'Password changed successfully.' };
   }
 }

@@ -15,6 +15,10 @@ input FindAllInput {
   orderBy: OrderBy!
 }
 
+type APIMessageOutput {
+  message: String!
+}
+
 directive @constraint(
   minLength: Int
   maxLength: Int

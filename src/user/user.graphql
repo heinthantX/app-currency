@@ -1,0 +1,28 @@
+type User {
+  id: ID!
+  email: String!
+  companyName: String
+  contactPerson: String
+  lastLoginAt: DateTime
+  role: UserRole
+
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+enum UserRole {
+  USER
+}
+
+input UpdateUserInput {
+  companyName: String
+  contactPerson: String
+}
+
+type Query {
+  me: User!
+}
+
+type Mutation {
+  updateUser(input: UpdateUserInput!): User!
+}
