@@ -1,0 +1,68 @@
+type Application {
+  id: ID!
+  appName: String!
+  appIdentifier: String!
+  description: String
+  platform: Platform!
+  status: AppStatus!
+  apiKey: String
+  secretKey: String
+  userIds: [ID!]
+  users: [User!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum Platform {
+  ANDROID
+  IOS
+  WEB
+}
+
+enum AppStatus {
+  ACTIVE
+  PENDING_REVIEW
+  SUSPENDED
+}
+
+input CreateApplicationInput {
+  appName: String!
+  appIdentifier: String!
+  description: String
+  platform: Platform!
+}
+
+input UpdateApplicationInput {
+  id: ID!
+  appName: String
+  appIdentifier: String
+  description: String
+  platform: Platform
+  status: AppStatus
+}
+
+input InviteUserInput {
+  applicationId: ID!
+  userId: ID!
+}
+
+type FindAllApplicationOutput {
+  data: [Application!]!
+  total: Int!
+}
+
+type Query {
+  applications(findAllInput: FindAllInput!): FindAllApplicationOutput!
+  application(id: ID!): Application!
+}
+
+type Mutation {
+  createApplication(
+    createApplicationInput: CreateApplicationInput!
+  ): Application!
+  updateApplication(
+    updateApplicationInput: UpdateApplicationInput!
+  ): Application!
+  deleteApplication(id: ID!): Application!
+  inviteUserToApplication(inviteUserInput: InviteUserInput!): Application!
+}

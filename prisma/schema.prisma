@@ -23,8 +23,8 @@ model User {
   lastLoginAt DateTime? @default(now())
   role        UserRole  @default(USER)
 
-  appIds String[] @db.ObjectId
-  apps   App[]    @relation(fields: [appIds], references: [id])
+  applicationIds String[]      @db.ObjectId
+  applications   Application[] @relation(fields: [applicationIds], references: [id])
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
@@ -36,7 +36,7 @@ enum UserRole {
   USER
 }
 
-model App {
+model Application {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   appName       String
   appIdentifier String
@@ -53,7 +53,7 @@ model App {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("apps")
+  @@map("applications")
 }
 
 enum Platform {
