@@ -17,5 +17,6 @@ import { TypedConfigService } from '../common/services';
     }),
   ],
   providers: [AuthResolver, AuthService, JwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

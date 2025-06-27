@@ -44,7 +44,6 @@ model Application {
   platform      Platform
   status        AppStatus
 
-  apiKey    String?
   secretKey String?
 
   userIds String[] @db.ObjectId

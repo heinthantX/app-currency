@@ -33,11 +33,19 @@ export class AuthService {
     );
   }
 
-  encrypt(payload: string): string {
-    return this.cryptr.encrypt(payload);
+  verifyJWT(token: string, secret?: string) {
+    return this.jwtService.verify(token, { secret });
   }
-  decrypt(payload: string): string {
-    return this.cryptr.decrypt(payload);
+
+  decodeJWT(token: string): string {
+    return this.jwtService.decode(token);
+  }
+
+  encrypt(payload: string | object): string {
+    return this.cryptr.encrypt(JSON.stringify(payload));
+  }
+  decrypt(payload: string): string | object {
+    return JSON.parse(this.cryptr.decrypt(payload));
   }
 
   hashPassword(password: string): Promise<string> {

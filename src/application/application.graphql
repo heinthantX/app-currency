@@ -5,8 +5,6 @@ type Application {
   description: String
   platform: Platform!
   status: AppStatus!
-  apiKey: String
-  secretKey: String
   userIds: [ID!]
   users: [User!]
   createdAt: DateTime!
@@ -54,6 +52,7 @@ type FindAllApplicationOutput {
 type Query {
   applications(findAllInput: FindAllInput!): FindAllApplicationOutput!
   application(id: ID!): Application!
+  getApiKey(applicationId: ID!): String!
 }
 
 type Mutation {
@@ -65,4 +64,5 @@ type Mutation {
   ): Application!
   deleteApplication(id: ID!): Application!
   inviteUserToApplication(inviteUserInput: InviteUserInput!): Application!
+  refreshApiKey(applicationId: ID!): APIMessageOutput!
 }

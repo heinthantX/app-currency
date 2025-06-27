@@ -7,11 +7,15 @@ import {
   InviteUserInput,
   FindAllInput,
   FindAllApplicationOutput,
+  APIMessageOutput,
 } from '../../typing';
 import { CurrentUser } from '../auth/decorators';
 import * as prisma from '@prisma/client';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from '../auth/guards';
 
 @Resolver('Application')
+@UseGuards(GqlAuthGuard)
 export class ApplicationResolver {
   constructor(private readonly applicationService: ApplicationService) {}
 
@@ -29,6 +33,14 @@ export class ApplicationResolver {
     @CurrentUser() user: prisma.User,
   ): Promise<Application> {
     return this.applicationService.findById(id, user);
+  }
+
+  @Query('getApiKey')
+  async getApiKey(
+    @Args('applicationId') applicationId: string,
+    @CurrentUser() user: prisma.User,
+  ): Promise<string> {
+    return this.applicationService.getApiKey(applicationId, user);
   }
 
   @Mutation('createApplication')
@@ -63,5 +75,13 @@ export class ApplicationResolver {
     @CurrentUser() user: prisma.User,
   ): Promise<Application> {
     return this.applicationService.inviteUser(inviteUserInput, user);
+  }
+
+  @Mutation('refreshApiKey')
+  async refreshApiKey(
+    @Args('applicationId') applicationId: string,
+    @CurrentUser() user: prisma.User,
+  ): Promise<APIMessageOutput> {
+    return this.applicationService.refreshApiKey(applicationId, user);
   }
 }
