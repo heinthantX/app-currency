@@ -12,7 +12,7 @@ export class ApplicationController {
   constructor(private readonly applicationService: ApplicationService) {}
 
   @Get('')
-  async getApplication(@CurrentApp() application: Application) {
+  getApplication(@CurrentApp() application: Application) {
     return application;
   }
 }

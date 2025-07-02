@@ -15,4 +15,4 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, documentFactory);
   await app.listen(process.env.PORT ?? 8000);
 }
-bootstrap().catch(console.error);
+void bootstrap();

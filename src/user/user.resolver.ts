@@ -12,7 +12,7 @@ export class UserResolver {
 
   @Query('me')
   @UseGuards(GqlAuthGuard)
-  async me(@CurrentUser() user: prisma.User): Promise<User> {
+  me(@CurrentUser() user: prisma.User): User {
     return user;
   }
 

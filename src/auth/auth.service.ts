@@ -12,6 +12,7 @@ import {
   APIMessageOutput,
 } from '../../typing';
 import { User } from '@prisma/client';
+import { JWTPayload, JWTPayloadData, JWTPayloadType } from './dto/jwt-payload';
 
 @Injectable()
 export class AuthService {
@@ -32,20 +33,18 @@ export class AuthService {
       { ...(expiresIn ? { expiresIn } : {}), secret },
     );
   }
-
-  verifyJWT(token: string, secret?: string) {
+  verifyJWT(token: string, secret?: string): JWTPayload {
     return this.jwtService.verify(token, { secret });
   }
-
-  decodeJWT(token: string): string {
+  decodeJWT(token: string): JWTPayload {
     return this.jwtService.decode(token);
   }
 
-  encrypt(payload: string | object): string {
+  encrypt(payload: JWTPayloadData): string {
     return this.cryptr.encrypt(JSON.stringify(payload));
   }
-  decrypt(payload: string): string | object {
-    return JSON.parse(this.cryptr.decrypt(payload));
+  decrypt(payload: string): JWTPayloadData {
+    return JSON.parse(this.cryptr.decrypt(payload)) as JWTPayloadData;
   }
 
   hashPassword(password: string): Promise<string> {
@@ -71,7 +70,9 @@ export class AuthService {
         lastLoginAt: new Date(),
       });
       return {
-        access_token: this.generateJWT(this.encrypt(user.id)),
+        access_token: this.generateJWT(
+          this.encrypt({ id: user.id, type: JWTPayloadType.USER }),
+        ),
       };
     } catch (err) {
       if (err instanceof BadRequestException) {
@@ -105,7 +106,9 @@ export class AuthService {
       });
 
       return {
-        access_token: this.generateJWT(this.encrypt(newUser.id)),
+        access_token: this.generateJWT(
+          this.encrypt({ id: newUser.id, type: JWTPayloadType.USER }),
+        ),
       };
     } catch (err) {
       if (err instanceof BadRequestException) {

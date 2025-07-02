@@ -12,6 +12,7 @@ import {
 } from '../../typing';
 import { generateApiSecret, removeNullishKeys } from '../common/util';
 import { AuthService } from '../auth/auth.service';
+import { JWTPayloadType } from '../auth/dto/jwt-payload';
 
 @Injectable()
 export class ApplicationService {
@@ -110,7 +111,10 @@ export class ApplicationService {
     });
 
     return this.authService.generateJWT(
-      this.authService.encrypt({ applicationId: application.id }),
+      this.authService.encrypt({
+        applicationId: application.id,
+        type: JWTPayloadType.APPLICATION,
+      }),
       application.secretKey,
     );
   }
@@ -135,8 +139,8 @@ export class ApplicationService {
     }
     try {
       const applicationId = this.authService.decrypt(
-        this.authService.decodeJWT(token)?.['data'],
-      )?.['applicationId'];
+        this.authService.decodeJWT(token)?.data,
+      )?.applicationId;
       if (!applicationId) {
         throw new UnauthorizedException('Invalid API key');
       }
@@ -148,7 +152,7 @@ export class ApplicationService {
       this.authService.verifyJWT(token, application.secretKey);
       delete application.secretKey;
       return application;
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Invalid API key');
     }
   }
